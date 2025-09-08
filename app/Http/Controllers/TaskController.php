@@ -36,6 +36,7 @@ class TaskController extends Controller
 
         $assignedTasks = Task::with('creator')
             ->where('assigned_user_id', auth()->id())
+            ->where('creator_id', '!=', auth()->id())  // Add this line to exclude self-assigned tasks
             ->get();
 
         $users = User::all();
