@@ -46,4 +46,17 @@ class TaskController extends Controller
             'users' => $users,
         ]);
     }
+
+    public function updateStatus(Request $request, Task $task)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,in_progress,completed'
+        ]);
+
+        $task->update([
+            'status' => $validated['status']
+        ]);
+
+        return redirect()->back();
+    }
 }

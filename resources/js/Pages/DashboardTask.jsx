@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Head, useForm } from "@inertiajs/react";
+import React, { useState } from 'react';
+import { Head, useForm , router } from "@inertiajs/react";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
@@ -19,6 +19,24 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
             },
         });
     };
+
+    const updateStatus = (taskId, newStatus) => {
+        router.patch(route('tasks.update-status', taskId), {
+            status: newStatus,
+        });
+    };
+
+    const StatusDropdown = ({ task }) => (
+        <select
+            value={task.status}
+            onChange={(e) => updateStatus(task.id, e.target.value)}
+            className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        >
+            <option value="pending">Pending</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+        </select>
+    );
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -94,24 +112,6 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
                         </button>
                     </div>
 
-                    {/* Stats Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                        <div className="bg-white shadow rounded-xl p-6 text-center">
-                            <p className="text-gray-500">Created Tasks</p>
-                            <h2 className="text-2xl font-bold text-blue-600">{createdTasks.length}</h2>
-                        </div>
-                        <div className="bg-white shadow rounded-xl p-6 text-center">
-                            <p className="text-gray-500">Assigned to You</p>
-                            <h2 className="text-2xl font-bold text-green-600">{assignedTasks.length}</h2>
-                        </div>
-                        <div className="bg-white shadow rounded-xl p-6 text-center">
-                            <p className="text-gray-500">Completed</p>
-                            <h2 className="text-2xl font-bold text-purple-600">
-                                {[...createdTasks, ...assignedTasks].filter((t) => t.status === "completed").length}
-                            </h2>
-                        </div>
-                    </div>
-
                     {/* Created Tasks */}
                     <section className="mb-10">
                         <h2 className="text-xl font-semibold mb-4">Tasks You Created</h2>
@@ -126,16 +126,10 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
                                             {task.assigned_user?.name || "Unassigned"}
                                         </span>
                                     </p>
-                                    <span
-                                        className={`inline-block mt-3 px-3 py-1 text-xs rounded-full ${task.status === "pending"
-                                            ? "bg-yellow-100 text-yellow-700"
-                                            : task.status === "in_progress"
-                                                ? "bg-blue-100 text-blue-700"
-                                                : "bg-green-100 text-green-700"
-                                            }`}
-                                    >
-                                        {task.status}
-                                    </span>
+                                    <div className="mt-3">
+                                        <label className="block text-sm font-medium text-gray-700">Status</label>
+                                        <StatusDropdown task={task} />
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -153,16 +147,10 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
                                         Created By:{" "}
                                         <span className="font-medium text-gray-700">{task.creator?.name}</span>
                                     </p>
-                                    <span
-                                        className={`inline-block mt-3 px-3 py-1 text-xs rounded-full ${task.status === "pending"
-                                            ? "bg-yellow-100 text-yellow-700"
-                                            : task.status === "in_progress"
-                                                ? "bg-blue-100 text-blue-700"
-                                                : "bg-green-100 text-green-700"
-                                            }`}
-                                    >
-                                        {task.status}
-                                    </span>
+                                    <div className="mt-3">
+                                        <label className="block text-sm font-medium text-gray-700">Status</label>
+                                        <StatusDropdown task={task} />
+                                    </div>
                                 </div>
                             ))}
                         </div>
