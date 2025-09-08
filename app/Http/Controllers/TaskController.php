@@ -60,4 +60,20 @@ class TaskController extends Controller
 
         return redirect()->back();
     }
+    public function update(Request $request, Task $task)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'assigned_user_id' => 'nullable|exists:users,id',
+        ]);
+
+        $task->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'assigned_user_id' => $validated['assigned_user_id'],
+        ]);
+
+        return redirect()->back();
+    }
 }

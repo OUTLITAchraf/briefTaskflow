@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { Head, useForm , router } from "@inertiajs/react";
+import { Head, useForm, router } from "@inertiajs/react";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import TaskDropdown from '@/Components/TaskDropdown';
 
 function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
     const [showModal, setShowModal] = useState(false);
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editingTask, setEditingTask] = useState(null);
+    const { data, setData, post, patch, processing, errors, reset } = useForm({
         title: '',
         description: '',
         assigned_user_id: '',
@@ -23,6 +26,27 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
     const updateStatus = (taskId, newStatus) => {
         router.patch(route('tasks.update-status', taskId), {
             status: newStatus,
+        });
+    };
+
+    const handleEdit = (task) => {
+        setEditingTask(task);
+        setData({
+            title: task.title,
+            description: task.description,
+            assigned_user_id: task.assigned_user_id || '',
+        });
+        setShowEditModal(true);
+    };
+
+    const handleUpdate = (e) => {
+        e.preventDefault();
+        patch(route('tasks.update', editingTask.id), {
+            onSuccess: () => {
+                setShowEditModal(false);
+                setEditingTask(null);
+                reset();
+            },
         });
     };
 
@@ -118,7 +142,13 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {createdTasks.map((task) => (
                                 <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-blue-500">
-                                    <h3 className="text-lg font-bold text-gray-800 mb-2">{task.title}</h3>
+                                    <div className="flex justify-between items-start mb-2">
+                                        <h3 className="text-lg font-bold text-gray-800">{task.title}</h3>
+                                        <TaskDropdown 
+                                            task={task}
+                                            onEdit={handleEdit}
+                                        />
+                                    </div>
                                     <p className="text-gray-600 mb-3">{task.description}</p>
                                     <p className="text-sm text-gray-500">
                                         Assigned To:{" "}
@@ -127,7 +157,6 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
                                         </span>
                                     </p>
                                     <div className="mt-3">
-                                        <label className="block text-sm font-medium text-gray-700">Status</label>
                                         <StatusDropdown task={task} />
                                     </div>
                                 </div>
@@ -155,6 +184,65 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
                             ))}
                         </div>
                     </section>
+
+                    {/* Edit Task Modal */}
+                    {showEditModal && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                            <div className="bg-white p-6 rounded-lg w-full max-w-md">
+                                <h2 className="text-xl font-bold mb-4">Edit Task</h2>
+                                <form onSubmit={handleUpdate}>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 mb-2">Title</label>
+                                        <input
+                                            type="text"
+                                            className="w-full border rounded p-2"
+                                            value={data.title}
+                                            onChange={e => setData('title', e.target.value)}
+                                        />
+                                        {errors.title && <div className="text-red-500">{errors.title}</div>}
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 mb-2">Description</label>
+                                        <textarea
+                                            className="w-full border rounded p-2"
+                                            value={data.description}
+                                            onChange={e => setData('description', e.target.value)}
+                                        />
+                                        {errors.description && <div className="text-red-500">{errors.description}</div>}
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 mb-2">Assign To</label>
+                                        <select
+                                            className="w-full border rounded p-2"
+                                            value={data.assigned_user_id}
+                                            onChange={e => setData('assigned_user_id', e.target.value)}
+                                        >
+                                            <option value="">Select User</option>
+                                            {users.map(user => (
+                                                <option key={user.id} value={user.id}>{user.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="flex justify-end gap-2">
+                                        <button
+                                            type="button"
+                                            className="bg-gray-300 px-4 py-2 rounded"
+                                            onClick={() => setShowEditModal(false)}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="bg-blue-500 text-white px-4 py-2 rounded"
+                                            disabled={processing}
+                                        >
+                                            Update Task
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </AuthenticatedLayout>
