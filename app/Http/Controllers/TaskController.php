@@ -39,7 +39,7 @@ class TaskController extends Controller
             ->where('creator_id', '!=', auth()->id())  // Add this line to exclude self-assigned tasks
             ->get();
 
-        $users = User::all();
+        $users = User::where('id','!=',1)->get(); // Exclude admin user from the list
 
         return Inertia::render('DashboardTask', [
             'createdTasks' => $createdTasks,
