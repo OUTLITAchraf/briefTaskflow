@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Head, useForm, router } from "@inertiajs/react";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TaskDropdown from '@/Components/TaskDropdown';
+import Swal from 'sweetalert2';
+import toast, { Toaster } from 'react-hot-toast';
 
 function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
     const [showModal, setShowModal] = useState(false);
@@ -19,7 +21,20 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
         post(route('tasks.store'), {
             onSuccess: () => {
                 setShowModal(false);
-                reset(); // Reset form after successful creation
+                reset();
+                toast.success('Task created successfully!');
+            },
+        });
+    };
+
+    const handleUpdate = (e) => {
+        e.preventDefault();
+        patch(route('tasks.update', editingTask.id), {
+            onSuccess: () => {
+                setShowEditModal(false);
+                setEditingTask(null);
+                reset();
+                toast.success('Task updated successfully!');
             },
         });
     };
@@ -27,6 +42,9 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
     const updateStatus = (taskId, newStatus) => {
         router.patch(route('tasks.update-status', taskId), {
             status: newStatus,
+            onSuccess: () => {
+                toast.success('Status updated successfully!');
+            },
         });
     };
 
@@ -40,21 +58,27 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
         setShowEditModal(true);
     };
 
-    const handleUpdate = (e) => {
-        e.preventDefault();
-        patch(route('tasks.update', editingTask.id), {
-            onSuccess: () => {
-                setShowEditModal(false);
-                setEditingTask(null);
-                reset();
-            },
-        });
-    };
-
     const handleDelete = (task) => {
-        if (confirm('Are you sure you want to delete this task?')) {
-            router.delete(route('tasks.destroy', task.id));
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.delete(route('tasks.destroy', task.id), {
+                    onSuccess: () => {
+                        toast.success('Task deleted successfully!');
+                    },
+                    onError: () => {
+                        toast.error('Failed to delete the task');
+                    }
+                });
+            }
+        });
     };
 
     const StatusDropdown = ({ task }) => (
@@ -95,6 +119,7 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
 
     return (
         <AuthenticatedLayout user={auth.user}>
+            <Toaster position="top-center" />
             <div className="py-8 px-5 lg:px-0">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <Head title="User Dashboard" />

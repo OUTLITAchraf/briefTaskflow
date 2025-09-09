@@ -80,8 +80,9 @@ class TaskController extends Controller
     {
         if ($task->creator_id === auth()->id()) {
             $task->delete();
+            return redirect()->back()->with('success', 'Task deleted successfully');
         }
         
-        return redirect()->back();
+        return redirect()->back()->with('error', 'Unauthorized to delete this task');
     }
 }
