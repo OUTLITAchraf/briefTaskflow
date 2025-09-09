@@ -76,4 +76,12 @@ class TaskController extends Controller
 
         return redirect()->back();
     }
+    public function destroy(Task $task)
+    {
+        if ($task->creator_id === auth()->id()) {
+            $task->delete();
+        }
+        
+        return redirect()->back();
+    }
 }

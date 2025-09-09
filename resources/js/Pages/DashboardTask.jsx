@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, useForm, router } from "@inertiajs/react";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TaskDropdown from '@/Components/TaskDropdown';
@@ -7,6 +7,7 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
     const [showModal, setShowModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [editingTask, setEditingTask] = useState(null);
+    const [openDropdownId, setOpenDropdownId] = useState(null);
     const { data, setData, post, patch, processing, errors, reset } = useForm({
         title: '',
         description: '',
@@ -18,7 +19,7 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
         post(route('tasks.store'), {
             onSuccess: () => {
                 setShowModal(false);
-                reset();
+                reset(); // Reset form after successful creation
             },
         });
     };
@@ -50,6 +51,12 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
         });
     };
 
+    const handleDelete = (task) => {
+        if (confirm('Are you sure you want to delete this task?')) {
+            router.delete(route('tasks.destroy', task.id));
+        }
+    };
+
     const StatusDropdown = ({ task }) => (
         <select
             value={task.status}
@@ -61,6 +68,30 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
             <option value="completed">Completed</option>
         </select>
     );
+
+    // Add this function to handle dropdown toggling
+    const toggleDropdown = (taskId) => {
+        setOpenDropdownId(openDropdownId === taskId ? null : taskId);
+    };
+
+    // Add click outside handler
+    useEffect(() => {
+        const handleClickOutside = () => {
+            setOpenDropdownId(null);
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
+
+    // Add a new useEffect to reset form when modal closes
+    useEffect(() => {
+        if (!showModal && !showEditModal) {
+            reset();
+        }
+    }, [showModal, showEditModal]);
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -82,6 +113,7 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
                                                 className="w-full border rounded p-2"
                                                 value={data.title}
                                                 onChange={e => setData('title', e.target.value)}
+                                                placeholder='Task Title'
                                             />
                                             {errors.title && <div className="text-red-500">{errors.title}</div>}
                                         </div>
@@ -91,6 +123,7 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
                                                 className="w-full border rounded p-2"
                                                 value={data.description}
                                                 onChange={e => setData('description', e.target.value)}
+                                                placeholder='Task Description'
                                             />
                                             {errors.description && <div className="text-red-500">{errors.description}</div>}
                                         </div>
@@ -130,7 +163,10 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
 
                         <button
                             className='bg-indigo-500 p-3 text-white rounded-lg'
-                            onClick={() => setShowModal(true)}
+                            onClick={() => {
+                                reset(); // Reset form data first
+                                setShowModal(true);
+                            }}
                         >
                             Create Task
                         </button>
@@ -144,10 +180,15 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
                                 <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-blue-500">
                                     <div className="flex justify-between items-start mb-2">
                                         <h3 className="text-lg font-bold text-gray-800">{task.title}</h3>
-                                        <TaskDropdown 
-                                            task={task}
-                                            onEdit={handleEdit}
-                                        />
+                                        {!showModal && (
+                                            <TaskDropdown 
+                                                task={task}
+                                                onEdit={handleEdit}
+                                                onDelete={handleDelete}
+                                                isOpen={openDropdownId === task.id}
+                                                onToggle={toggleDropdown}
+                                            />
+                                        )}
                                     </div>
                                     <p className="text-gray-600 mb-3">{task.description}</p>
                                     <p className="text-sm text-gray-500">
