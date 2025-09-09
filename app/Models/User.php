@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable implements LaratrustUser
 {
@@ -44,4 +45,24 @@ class User extends Authenticatable implements LaratrustUser
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::deleting(function($user) {
+            $user->createdTasks()->delete();
+            $user->assignedTasks()->update(['assigned_user_id' => null]);
+        });
+    }
+
+    public function createdTasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'creator_id');
+    }
+
+    public function assignedTasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'assigned_user_id');
+    }
 }
