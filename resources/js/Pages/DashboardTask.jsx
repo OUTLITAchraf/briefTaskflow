@@ -5,7 +5,7 @@ import TaskDropdown from '@/Components/TaskDropdown';
 import Swal from 'sweetalert2';
 import toast, { Toaster } from 'react-hot-toast';
 
-function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
+function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
     const [showModal, setShowModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [editingTask, setEditingTask] = useState(null);
@@ -16,8 +16,10 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
         assigned_user_id: '',
     });
 
-    console.log(auth.user);
-    
+    const role = auth.user.roles.map(role => role.name);
+    const isAdmin = role.includes('admin');
+    const isUser = role.includes('user');
+
     const handleSubmit = (e) => {
         e.preventDefault();
         post(route('tasks.store'), {
@@ -74,6 +76,8 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
                 router.delete(route('tasks.destroy', task.id), {
                     onSuccess: () => {
                         toast.success('Task deleted successfully!');
+                        // Force a page refresh to update the task list
+                        router.reload();
                     },
                     onError: () => {
                         toast.error('Failed to delete the task');
@@ -117,7 +121,7 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
         if (!showModal && !showEditModal) {
             reset();
         }
-    }, [showModal, showEditModal]);
+    }, [showModal, showEditModal]);    
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -199,59 +203,105 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
                         </button>
                     </div>
 
-                    {/* Created Tasks */}
-                    <section className="mb-10">
-                        <h2 className="text-xl font-semibold mb-4">Tasks You Created</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {createdTasks.map((task) => (
-                                <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-blue-500">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h3 className="text-lg font-bold text-gray-800">{task.title}</h3>
-                                        {!showModal && (
-                                            <TaskDropdown 
-                                                task={task}
-                                                onEdit={handleEdit}
-                                                onDelete={handleDelete}
-                                                isOpen={openDropdownId === task.id}
-                                                onToggle={toggleDropdown}
-                                            />
-                                        )}
+                    {isAdmin && (
+                        <section className="mb-10">
+                            <h2 className="text-xl font-semibold mb-4">All Tasks</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {tasks.map((task) => (
+                                    <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-purple-500">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h3 className="text-lg font-bold text-gray-800">{task.title}</h3>
+                                            {!showModal && (
+                                                <TaskDropdown
+                                                    task={task}
+                                                    onEdit={handleEdit}
+                                                    onDelete={handleDelete}
+                                                    isOpen={openDropdownId === task.id}
+                                                    onToggle={toggleDropdown}
+                                                />
+                                            )}
+                                        </div>
+                                        <p className="text-gray-600 mb-3">{task.description}</p>
+                                        <div className="space-y-2">
+                                            <p className="text-sm text-gray-500">
+                                                Created By:{" "}
+                                                <span className="font-medium text-gray-700">
+                                                    {task.creator?.name}
+                                                </span>
+                                            </p>
+                                            <p className="text-sm text-gray-500">
+                                                Assigned To:{" "}
+                                                <span className="font-medium text-gray-700">
+                                                    {task.assigned_user?.name || "Unassigned"}
+                                                </span>
+                                            </p>
+                                            <div className="mt-3">
+                                                <label className="block text-sm font-medium text-gray-700">
+                                                    Status
+                                                </label>
+                                                <StatusDropdown task={task} />
+                                            </div>
+                                        </div>
                                     </div>
-                                    <p className="text-gray-600 mb-3">{task.description}</p>
-                                    <p className="text-sm text-gray-500">
-                                        Assigned To:{" "}
-                                        <span className="font-medium text-gray-700">
-                                            {task.assigned_user?.name || "Unassigned"}
-                                        </span>
-                                    </p>
-                                    <div className="mt-3">
-                                        <StatusDropdown task={task} />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+                                ))}
+                            </div>
+                        </section>
+                    )}
 
-                    {/* Assigned Tasks */}
-                    <section>
-                        <h2 className="text-xl font-semibold mb-4">Tasks Assigned to You</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {assignedTasks.map((task) => (
-                                <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-green-500">
-                                    <h3 className="text-lg font-bold text-gray-800 mb-2">{task.title}</h3>
-                                    <p className="text-gray-600 mb-3">{task.description}</p>
-                                    <p className="text-sm text-gray-500">
-                                        Created By:{" "}
-                                        <span className="font-medium text-gray-700">{task.creator?.name}</span>
-                                    </p>
-                                    <div className="mt-3">
-                                        <label className="block text-sm font-medium text-gray-700">Status</label>
-                                        <StatusDropdown task={task} />
+                    {isUser && (<>
+                        < section className="mb-10">
+                            <h2 className="text-xl font-semibold mb-4">Tasks You Created</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {createdTasks.map((task) => (
+                                    <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-blue-500">
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h3 className="text-lg font-bold text-gray-800">{task.title}</h3>
+                                            {!showModal && (
+                                                <TaskDropdown
+                                                    task={task}
+                                                    onEdit={handleEdit}
+                                                    onDelete={handleDelete}
+                                                    isOpen={openDropdownId === task.id}
+                                                    onToggle={toggleDropdown}
+                                                />
+                                            )}
+                                        </div>
+                                        <p className="text-gray-600 mb-3">{task.description}</p>
+                                        <p className="text-sm text-gray-500">
+                                            Assigned To:{" "}
+                                            <span className="font-medium text-gray-700">
+                                                {task.assigned_user?.name || "Unassigned"}
+                                            </span>
+                                        </p>
+                                        <div className="mt-3">
+                                            <StatusDropdown task={task} />
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+                                ))}
+                            </div>
+                        </section>
+                        <section>
+                            <h2 className="text-xl font-semibold mb-4">Tasks Assigned to You</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {assignedTasks.map((task) => (
+                                    <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-green-500">
+                                        <h3 className="text-lg font-bold text-gray-800 mb-2">{task.title}</h3>
+                                        <p className="text-gray-600 mb-3">{task.description}</p>
+                                        <p className="text-sm text-gray-500">
+                                            Created By:{" "}
+                                            <span className="font-medium text-gray-700">{task.creator?.name}</span>
+                                        </p>
+                                        <div className="mt-3">
+                                            <label className="block text-sm font-medium text-gray-700">Status</label>
+                                            <StatusDropdown task={task} />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    </>
+                    )}
+
 
                     {/* Edit Task Modal */}
                     {showEditModal && (
@@ -313,7 +363,7 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
                     )}
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </AuthenticatedLayout >
     )
 }
 

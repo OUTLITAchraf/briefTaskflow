@@ -38,13 +38,19 @@ class TaskController extends Controller
             ->where('assigned_user_id', auth()->id())
             ->where('creator_id', '!=', auth()->id())  // Add this line to exclude self-assigned tasks
             ->get();
-
+        
         $users = User::where('id','!=',1)->get(); // Exclude admin user from the list
+        $tasks = Task::with(['creator', 'assignedUser'])->get();
 
         return Inertia::render('DashboardTask', [
+            'auth' => [
+                'user' => auth()->user(),
+                'roles' => auth()->user()->roles->pluck('name')->toArray(),
+            ],
             'createdTasks' => $createdTasks,
             'assignedTasks' => $assignedTasks,
             'users' => $users,
+            'tasks' => $tasks,
         ]);
     }
 
@@ -78,9 +84,10 @@ class TaskController extends Controller
     }
     public function destroy(Task $task)
     {
-        if ($task->creator_id === auth()->id()) {
+        // Allow admin to delete any task or creator to delete their own task
+        if (auth()->user()->hasRole('admin') || $task->creator_id === auth()->id()) {
             $task->delete();
-            return redirect()->back()->with('success', 'Task deleted successfully');
+            return redirect()->back();
         }
         
         return redirect()->back()->with('error', 'Unauthorized to delete this task');
