@@ -5,6 +5,8 @@ export default function Dashboard({ auth }) {
     const role = auth.user.roles.map(role => role.name);
     const isAdmin = role.includes('admin');
     const isUser = role.includes('user');
+    console.log(role);
+    
     return (
         <AuthenticatedLayout
             user={auth.user}

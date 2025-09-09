@@ -84,7 +84,6 @@ class TaskController extends Controller
     }
     public function destroy(Task $task)
     {
-        // Allow admin to delete any task or creator to delete their own task
         if (auth()->user()->hasRole('admin') || $task->creator_id === auth()->id()) {
             $task->delete();
             return redirect()->back();

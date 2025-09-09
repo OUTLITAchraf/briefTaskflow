@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard-users', [UserController::class, 'index'])->name('dashboard-users');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
 });
 
 require __DIR__.'/auth.php';
