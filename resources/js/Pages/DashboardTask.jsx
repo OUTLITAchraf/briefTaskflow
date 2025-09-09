@@ -16,6 +16,8 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users }) {
         assigned_user_id: '',
     });
 
+    console.log(auth.user);
+    
     const handleSubmit = (e) => {
         e.preventDefault();
         post(route('tasks.store'), {
