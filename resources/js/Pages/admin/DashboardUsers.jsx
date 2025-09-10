@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm, router } from "@inertiajs/react";
 import toast, { Toaster } from "react-hot-toast";
@@ -87,6 +87,12 @@ export default function DashboardUsers({ auth, users }) {
 
     };
 
+    useEffect(() => {
+        if (!showEditModal && !showCreateModal) {
+            reset();
+        }
+    }, [showEditModal, showCreateModal]);
+
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Manage Users" />
@@ -113,6 +119,7 @@ export default function DashboardUsers({ auth, users }) {
                                                     <input
                                                         type="text"
                                                         className="w-full border rounded p-2 bg-white dark:bg-gray-700 dark:text-gray-100"
+                                                        placeholder="Enter name"
                                                         value={data.name}
                                                         onChange={(e) => setData("name", e.target.value)}
                                                     />
@@ -129,6 +136,7 @@ export default function DashboardUsers({ auth, users }) {
                                                     <input
                                                         type="email"
                                                         className="w-full border rounded p-2 bg-white dark:bg-gray-700 dark:text-gray-100"
+                                                        placeholder="Enter email"
                                                         value={data.email}
                                                         onChange={(e) => setData("email", e.target.value)}
                                                     />
@@ -145,6 +153,7 @@ export default function DashboardUsers({ auth, users }) {
                                                     <input
                                                         type="password"
                                                         className="w-full border rounded p-2 bg-white dark:bg-gray-700 dark:text-gray-100"
+                                                        placeholder="Enter password"
                                                         value={data.password}
                                                         onChange={(e) => setData("password", e.target.value)}
                                                     />
@@ -244,7 +253,11 @@ export default function DashboardUsers({ auth, users }) {
                                 {/* Add User Button */}
                                 <div className="flex justify-between items-center mb-6">
                                     <button
-                                        onClick={() => setShowCreateModal(true)}
+                                        onClick={() => {
+                                            reset(),
+                                            setShowCreateModal(true)
+                                            }
+                                        }
                                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
                                     >
                                         Add New User
