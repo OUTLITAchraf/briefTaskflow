@@ -3,6 +3,8 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm, router } from "@inertiajs/react";
 import toast, { Toaster } from "react-hot-toast";
 import Swal from 'sweetalert2';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { PlusIcon } from '@heroicons/react/24/solid';
 
 export default function DashboardUsers({ auth, users }) {
     const [editingUser, setEditingUser] = useState(null);
@@ -254,12 +256,12 @@ export default function DashboardUsers({ auth, users }) {
                                 <div className="flex justify-between items-center mb-6">
                                     <button
                                         onClick={() => {
-                                            reset(),
-                                            setShowCreateModal(true)
-                                            }
-                                        }
-                                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
+                                            reset();
+                                            setShowCreateModal(true);
+                                        }}
+                                        className="flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
                                     >
+                                        <PlusIcon className="w-4 h-4 mr-2" />
                                         Add New User
                                     </button>
                                 </div>
@@ -293,17 +295,19 @@ export default function DashboardUsers({ auth, users }) {
                                                 <td className="p-3">{u.id}</td>
                                                 <td className="p-3">{u.name}</td>
                                                 <td className="p-3">{u.email}</td>
-                                                <td className="p-3 space-x-2">
+                                                <td className="p-3 space-x-2 flex">
                                                     <button
                                                         onClick={() => handleEdit(u)}
-                                                        className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                                                        className="flex items-center px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
                                                     >
+                                                        <PencilIcon className="w-4 h-4 mr-1" />
                                                         Update
                                                     </button>
                                                     <button
                                                         onClick={() => handleDeleteUser(u.id)}
-                                                        className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                                                        className="flex items-center px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
                                                     >
+                                                        <TrashIcon className="w-4 h-4 mr-1" />
                                                         Delete
                                                     </button>
                                                 </td>

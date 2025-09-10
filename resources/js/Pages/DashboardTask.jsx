@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TaskDropdown from '@/Components/TaskDropdown';
 import Swal from 'sweetalert2';
 import toast, { Toaster } from 'react-hot-toast';
-import { CheckCircle, Clock, Loader } from 'lucide-react';
+import { CheckCircle, Clock, Loader, PlusCircleIcon } from 'lucide-react';
 
 function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
     const [showModal, setShowModal] = useState(false);
@@ -197,12 +197,13 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                         )}
 
                         <button
-                            className='bg-indigo-500 p-3 text-white rounded-lg'
+                            className="flex items-center bg-indigo-500 p-3 text-white rounded-lg hover:bg-indigo-600"
                             onClick={() => {
                                 reset(); // Reset form data first
                                 setShowModal(true);
                             }}
                         >
+                            <PlusCircleIcon className="w-5 h-5 mr-2" />
                             Create Task
                         </button>
                     </div>
