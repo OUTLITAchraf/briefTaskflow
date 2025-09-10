@@ -10,8 +10,8 @@ export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     const role = user.roles ? user.roles.map(role => role.name) : [];
-    const isAdmin = role.includes('admin');        
-    
+    const isAdmin = role.includes('admin');
+
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
             <nav className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
@@ -131,9 +131,14 @@ export default function Authenticated({ user, header, children }) {
                             <ResponsiveNavLink method="post" href={route('logout')} as="button">
                                 Log Out
                             </ResponsiveNavLink>
+                            {/* Dark mode toggle button */}
+                            <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-600">
+                                <DarkModeToggle />
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </nav>
 
             {header && (

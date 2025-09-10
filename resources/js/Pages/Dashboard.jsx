@@ -24,7 +24,7 @@ export default function Dashboard({ auth }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 lg:mt-10">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg dark:bg-gray-800">
                         <h2 className='p-6 text-2xl font-bold text-gray-900 dark:text-white'>Welcome User {auth.user.name}</h2>
-                        <p className="p-6 text-gray-900 dark:text-white">You're logged in!</p>
+                        <p className="p-6 text-gray-900 dark:text-white">You're logged in as User!</p>
                     </div>
                 </div>
             )}

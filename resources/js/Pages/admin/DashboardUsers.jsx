@@ -3,8 +3,9 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, useForm, router } from "@inertiajs/react";
 import toast, { Toaster } from "react-hot-toast";
 import Swal from 'sweetalert2';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { PencilIcon, TrashIcon, UsersIcon } from '@heroicons/react/24/solid';
 import { PlusIcon } from '@heroicons/react/24/solid';
+import { Users2Icon } from "lucide-react";
 
 export default function DashboardUsers({ auth, users }) {
     const [editingUser, setEditingUser] = useState(null);
@@ -96,7 +97,17 @@ export default function DashboardUsers({ auth, users }) {
     }, [showEditModal, showCreateModal]);
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout
+            user={auth.user}
+            header={
+                <div className="flex items-center gap-2">
+                    <Users2Icon className="w-6 h-6 text-gray-800 dark:text-white" />
+                    <h2 className="font-semibold text-xl text-gray-800 dark:text-white leading-tight">
+                        Manage Users
+                    </h2>
+                </div>
+            }
+        >
             <Head title="Manage Users" />
             <Toaster position="top-center" reverseOrder={false} />
             <div className="py-12">
@@ -104,7 +115,12 @@ export default function DashboardUsers({ auth, users }) {
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
                             <div className="flex justify-between items-center">
-                                <h2 className="text-2xl font-semibold mb-4">Manage Users</h2>
+                                <div className="flex items-center gap-2">
+                                    <UsersIcon className="w-6 h-6 text-gray-800 dark:text-white" />
+                                    <h2 className="font-semibold text-2xl text-gray-800 dark:text-white leading-tight">
+                                        Users List
+                                    </h2>
+                                </div>
                                 {/* Modal */}
                                 {showCreateModal && (
                                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -269,9 +285,6 @@ export default function DashboardUsers({ auth, users }) {
 
                             {/* Users Table */}
                             <div className="bg-white dark:bg-gray-900 shadow rounded-lg">
-                                <h2 className="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700">
-                                    Users List
-                                </h2>
                                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead className="bg-gray-50 dark:bg-gray-700">
                                         <tr>
@@ -294,8 +307,12 @@ export default function DashboardUsers({ auth, users }) {
                                             <tr key={u.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                                 <td className="p-3">{u.id}</td>
                                                 <td className="p-3">{u.name}</td>
-                                                <td className="p-3">{u.email}</td>
-                                                <td className="p-3 space-x-2 flex">
+                                                <td className="p-3">
+                                                    <span className="block truncate max-w-[7ch] sm:max-w-full">
+                                                        {u.email}
+                                                    </span>
+                                                </td>
+                                                <td className="p-3 space-x-2 flex flex-col gap-2 sm:gap-0 sm:flex-row">
                                                     <button
                                                         onClick={() => handleEdit(u)}
                                                         className="flex items-center px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"

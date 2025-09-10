@@ -4,7 +4,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TaskDropdown from '@/Components/TaskDropdown';
 import Swal from 'sweetalert2';
 import toast, { Toaster } from 'react-hot-toast';
-import { CheckCircle, Clock, Loader, PlusCircleIcon } from 'lucide-react';
+import { ChartBarIcon, CheckCircle, Clock, Loader, PlusCircleIcon } from 'lucide-react';
+import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid';
 
 function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
     const [showModal, setShowModal] = useState(false);
@@ -126,14 +127,26 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight dark:text-white">Task Dashboard</h2>}
+            header={
+                <div className="flex items-center gap-2">
+                    <ClipboardDocumentListIcon className="w-6 h-6 text-gray-800 dark:text-white" />
+                    <h2 className="font-semibold text-xl text-gray-800 dark:text-white leading-tight">
+                        Manage Tasks
+                    </h2>
+                </div>
+            }
         >
             <Toaster position="top-center" />
             <div className="py-8 px-5 lg:px-0">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <Head title="Task Dashboard" />
                     <div className='flex justify-between items-center mb-8'>
-                        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">Tasks Progress</h1>
+                        <div className="flex items-center gap-2">
+                            <ChartBarIcon className="w-6 h-6 text-gray-800 dark:text-white" />
+                            <h2 className="font-semibold text-2xl text-gray-800 dark:text-white leading-tight">
+                                Task Progress
+                            </h2>
+                        </div>
 
                         {/* Create Task Modal */}
                         {showModal && (
@@ -237,7 +250,12 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                                 </div>
                             </div>
                             <section className="mb-10">
-                                <h2 className="text-xl font-semibold mb-4 dark:text-white">All Tasks</h2>
+                                <div className="flex items-center gap-2 mb-5">
+                                    <ClipboardDocumentListIcon className="w-6 h-6 text-gray-800 dark:text-white" />
+                                    <h2 className="font-semibold text-2xl text-gray-800 dark:text-white leading-tight">
+                                        All Tasks
+                                    </h2>
+                                </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {tasks.map((task) => (
                                         <div key={task.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border-l-4 border-purple-500">
