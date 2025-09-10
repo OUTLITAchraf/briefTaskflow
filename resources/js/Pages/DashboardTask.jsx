@@ -4,6 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TaskDropdown from '@/Components/TaskDropdown';
 import Swal from 'sweetalert2';
 import toast, { Toaster } from 'react-hot-toast';
+import { CheckCircle, Clock, Loader } from 'lucide-react';
 
 function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
     const [showModal, setShowModal] = useState(false);
@@ -121,7 +122,7 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
         if (!showModal && !showEditModal) {
             reset();
         }
-    }, [showModal, showEditModal]);    
+    }, [showModal, showEditModal]);
 
     return (
         <AuthenticatedLayout user={auth.user}>
@@ -249,11 +250,45 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                     )}
 
                     {isUser && (<>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                            {/* Pending */}
+                            <div className="bg-white shadow rounded-xl p-6 text-center">
+                                <div className="flex items-center justify-center mb-2">
+                                    <Clock className="h-10 w-10 text-blue-500" />
+                                </div>
+                                <p className="text-gray-500">Pending Tasks</p>
+                                <h2 className="text-2xl font-bold text-blue-600">
+                                    {[...createdTasks, ...assignedTasks].filter((t) => t.status === "pending").length}
+                                </h2>
+                            </div>
+
+                            {/* In Progress */}
+                            <div className="bg-white shadow rounded-xl p-6 text-center">
+                                <div className="flex items-center justify-center mb-2">
+                                    <Loader className="h-10 w-10 text-yellow-500 animate-spin-slow" />
+                                </div>
+                                <p className="text-gray-500">In Progress Tasks</p>
+                                <h2 className="text-2xl font-bold text-yellow-500">
+                                    {[...createdTasks, ...assignedTasks].filter((t) => t.status === "in_progress").length}
+                                </h2>
+                            </div>
+
+                            {/* Completed */}
+                            <div className="bg-white shadow rounded-xl p-6 text-center">
+                                <div className="flex items-center justify-center mb-2">
+                                    <CheckCircle className="h-10 w-10 text-green-500" />
+                                </div>
+                                <p className="text-gray-500">Completed Tasks</p>
+                                <h2 className="text-2xl font-bold text-green-500">
+                                    {[...createdTasks, ...assignedTasks].filter((t) => t.status === "completed").length}
+                                </h2>
+                            </div>
+                        </div>
                         < section className="mb-10">
                             <h2 className="text-xl font-semibold mb-4">Tasks You Created</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {createdTasks.map((task) => (
-                                    <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-blue-500">
+                                    <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-red-500">
                                         <div className="flex justify-between items-start mb-2">
                                             <h3 className="text-lg font-bold text-gray-800">{task.title}</h3>
                                             {!showModal && (
@@ -284,7 +319,7 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                             <h2 className="text-xl font-semibold mb-4">Tasks Assigned to You</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {assignedTasks.map((task) => (
-                                    <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-green-500">
+                                    <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-purple-500">
                                         <h3 className="text-lg font-bold text-gray-800 mb-2">{task.title}</h3>
                                         <p className="text-gray-600 mb-3">{task.description}</p>
                                         <p className="text-sm text-gray-500">
