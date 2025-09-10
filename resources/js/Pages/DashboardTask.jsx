@@ -208,48 +208,76 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                     </div>
 
                     {isAdmin && (
-                        <section className="mb-10">
-                            <h2 className="text-xl font-semibold mb-4 dark:text-white">All Tasks</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {tasks.map((task) => (
-                                    <div key={task.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border-l-4 border-purple-500">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">{task.title}</h3>
-                                            {!showModal && (
-                                                <TaskDropdown
-                                                    task={task}
-                                                    onEdit={handleEdit}
-                                                    onDelete={handleDelete}
-                                                    isOpen={openDropdownId === task.id}
-                                                    onToggle={toggleDropdown}
-                                                />
-                                            )}
-                                        </div>
-                                        <p className="text-gray-600 dark:text-gray-400 mb-3">{task.description}</p>
-                                        <div className="space-y-2">
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                Created By:{" "}
-                                                <span className="font-medium text-gray-700 dark:text-gray-200">
-                                                    {task.creator?.name}
-                                                </span>
-                                            </p>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                Assigned To:{" "}
-                                                <span className="font-medium text-gray-700 dark:text-gray-200">
-                                                    {task.assigned_user?.name || "Unassigned"}
-                                                </span>
-                                            </p>
-                                            <div className="mt-3">
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                    Status
-                                                </label>
-                                                <StatusDropdown task={task} />
+                        <>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                                {/* Pending */}
+                                <div className="bg-white dark:bg-gray-800 shadow rounded-xl p-6 text-center">
+                                    <div className="flex items-center justify-center mb-2">
+                                        <Clock className="h-10 w-10 text-blue-500 dark:text-blue-400" />
+                                    </div>
+                                    <p className="text-gray-500 dark:text-gray-300">Pending Tasks</p>
+                                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400">{tasks.filter(t => t.status === 'pending').length}</h2>
+                                </div>
+                                {/* In Progress */}
+                                <div className="bg-white dark:bg-gray-800 shadow rounded-xl p-6 text-center">
+                                    <div className="flex items-center justify-center mb-2">
+                                        <Loader className="h-10 w-10 text-yellow-500 dark:text-yellow-400 animate-spin-slow" />
+                                    </div>
+                                    <p className="text-gray-500 dark:text-gray-300">In Progress Tasks</p>
+                                    <h2 className="text-2xl font-bold text-yellow-500 dark:text-yellow-400">{tasks.filter(t => t.status === 'in_progress').length}</h2>
+                                </div>
+                                {/* Completed */}
+                                <div className="bg-white dark:bg-gray-800 shadow rounded-xl p-6 text-center">
+                                    <div className="flex items-center justify-center mb-2">
+                                        <CheckCircle className="h-10 w-10 text-green-500 dark:text-green-400" />
+                                    </div>
+                                    <p className="text-gray-500 dark:text-gray-300">Completed Tasks</p>
+                                    <h2 className="text-2xl font-bold text-green-500 dark:text-green-400">{tasks.filter(t => t.status === 'completed').length}</h2>
+                                </div>
+                            </div>
+                            <section className="mb-10">
+                                <h2 className="text-xl font-semibold mb-4 dark:text-white">All Tasks</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {tasks.map((task) => (
+                                        <div key={task.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border-l-4 border-purple-500">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">{task.title}</h3>
+                                                {!showModal && (
+                                                    <TaskDropdown
+                                                        task={task}
+                                                        onEdit={handleEdit}
+                                                        onDelete={handleDelete}
+                                                        isOpen={openDropdownId === task.id}
+                                                        onToggle={toggleDropdown}
+                                                    />
+                                                )}
+                                            </div>
+                                            <p className="text-gray-600 dark:text-gray-400 mb-3">{task.description}</p>
+                                            <div className="space-y-2">
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    Created By:{" "}
+                                                    <span className="font-medium text-gray-700 dark:text-gray-200">
+                                                        {task.creator?.name}
+                                                    </span>
+                                                </p>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    Assigned To:{" "}
+                                                    <span className="font-medium text-gray-700 dark:text-gray-200">
+                                                        {task.assigned_user?.name || "Unassigned"}
+                                                    </span>
+                                                </p>
+                                                <div className="mt-3">
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        Status
+                                                    </label>
+                                                    <StatusDropdown task={task} />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
+                                    ))}
+                                </div>
+                            </section>
+                        </>
                     )}
 
                     {isUser && (
