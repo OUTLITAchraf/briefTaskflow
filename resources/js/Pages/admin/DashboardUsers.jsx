@@ -5,19 +5,20 @@ import toast, { Toaster } from "react-hot-toast";
 import Swal from 'sweetalert2';
 
 export default function DashboardUsers({ auth, users }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const [editingUser, setEditingUser] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const { data, setData, post, patch, processing, errors, reset } = useForm({
         name: '',
         email: '',
-        password: '',
+        password: '', // Optional for update
     });
-
-    const [showModal, setShowModal] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         post(route('users.store'), {
             onSuccess: () => {
-                setShowModal(false);
+                setShowCreateModal(false);
                 reset();
                 toast.success('User created successfully');
             },
@@ -27,8 +28,29 @@ export default function DashboardUsers({ auth, users }) {
         });
     };
 
-    const handleUpdateUser = (userId) => {
-        // Add user update logic here
+    const handleEdit = (user) => {
+        setEditingUser(user);
+        setData({
+            name: user.name,
+            email: user.email,
+            password: '',
+        });
+        setShowEditModal(true);
+    };
+
+    const handleUpdate = (e) => {
+        e.preventDefault();
+        patch(route('users.update', editingUser.id), {
+            onSuccess: () => {
+                setShowEditModal(false);
+                setEditingUser(null);
+                reset();
+                toast.success('User updated successfully');
+            },
+            onError: () => {
+                toast.error('Failed to update user');
+            }
+        });
     };
 
     const handleDeleteUser = (userId) => {
@@ -37,9 +59,19 @@ export default function DashboardUsers({ auth, users }) {
             text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+            background: '#1f2937', // Tailwind gray-800
+            color: '#f3f4f6',      // Tailwind gray-100
+            confirmButtonColor: '#2563eb', // Tailwind blue-600
+            cancelButtonColor: '#dc2626',  // Tailwind red-600
+            customClass: {
+                popup: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-lg rounded-lg',
+                title: 'text-lg font-bold',
+                content: 'text-gray-700 dark:text-gray-300',
+                confirmButton: 'bg-blue-600 dark:bg-blue-500 hover:bg-blue-500 dark:hover:bg-blue-400 text-white',
+                cancelButton: 'bg-red-600 dark:bg-red-500 hover:bg-red-500 dark:hover:bg-red-400 text-white'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 router.delete(route('users.destroy', userId), {
@@ -52,6 +84,7 @@ export default function DashboardUsers({ auth, users }) {
                 });
             }
         });
+
     };
 
     return (
@@ -65,7 +98,7 @@ export default function DashboardUsers({ auth, users }) {
                             <div className="flex justify-between items-center">
                                 <h2 className="text-2xl font-semibold mb-4">Manage Users</h2>
                                 {/* Modal */}
-                                {showModal && (
+                                {showCreateModal && (
                                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                                         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md shadow-lg">
                                             <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">
@@ -125,7 +158,7 @@ export default function DashboardUsers({ auth, users }) {
                                                     <button
                                                         type="button"
                                                         className="bg-gray-300 dark:bg-gray-600 dark:text-gray-100 px-4 py-2 rounded hover:bg-gray-400 dark:hover:bg-gray-500"
-                                                        onClick={() => setShowModal(false)}
+                                                        onClick={() => setShowCreateModal(false)}
                                                     >
                                                         Cancel
                                                     </button>
@@ -141,10 +174,77 @@ export default function DashboardUsers({ auth, users }) {
                                         </div>
                                     </div>
                                 )}
+                                {/* Edit User Modal */}
+                                {showEditModal && (
+                                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md">
+                                            <h2 className="text-xl font-bold mb-4 dark:text-gray-200">
+                                                Edit User
+                                            </h2>
+                                            <form onSubmit={handleUpdate}>
+                                                <div className="mb-4">
+                                                    <label className="block text-gray-700 dark:text-gray-200 mb-2">
+                                                        Name
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        className="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded p-2"
+                                                        value={data.name}
+                                                        onChange={e => setData('name', e.target.value)}
+                                                    />
+                                                    {errors.name && <div className="text-red-500 text-sm">{errors.name}</div>}
+                                                </div>
+
+                                                <div className="mb-4">
+                                                    <label className="block text-gray-700 dark:text-gray-200 mb-2">
+                                                        Email
+                                                    </label>
+                                                    <input
+                                                        type="email"
+                                                        className="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded p-2"
+                                                        value={data.email}
+                                                        onChange={e => setData('email', e.target.value)}
+                                                    />
+                                                    {errors.email && <div className="text-red-500 text-sm">{errors.email}</div>}
+                                                </div>
+
+                                                <div className="mb-4">
+                                                    <label className="block text-gray-700 dark:text-gray-200 mb-2">
+                                                        Password (leave empty to keep current)
+                                                    </label>
+                                                    <input
+                                                        type="password"
+                                                        className="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded p-2"
+                                                        value={data.password}
+                                                        onChange={e => setData('password', e.target.value)}
+                                                    />
+                                                    {errors.password && <div className="text-red-500 text-sm">{errors.password}</div>}
+                                                </div>
+
+                                                <div className="flex justify-end gap-2">
+                                                    <button
+                                                        type="button"
+                                                        className="bg-gray-300 dark:bg-gray-600 px-4 py-2 rounded"
+                                                        onClick={() => setShowEditModal(false)}
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                    <button
+                                                        type="submit"
+                                                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                                                        disabled={processing}
+                                                    >
+                                                        Update User
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                )}
                                 {/* Add User Button */}
                                 <div className="flex justify-between items-center mb-6">
                                     <button
-                                        onClick={() => setShowModal(true)}
+                                        onClick={() => setShowCreateModal(true)}
                                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
                                     >
                                         Add New User
@@ -182,7 +282,7 @@ export default function DashboardUsers({ auth, users }) {
                                                 <td className="p-3">{u.email}</td>
                                                 <td className="p-3 space-x-2">
                                                     <button
-                                                        onClick={() => handleUpdateUser(u.id)}
+                                                        onClick={() => handleEdit(u)}
                                                         className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
                                                     >
                                                         Update

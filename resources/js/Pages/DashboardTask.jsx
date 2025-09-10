@@ -77,7 +77,6 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                 router.delete(route('tasks.destroy', task.id), {
                     onSuccess: () => {
                         toast.success('Task deleted successfully!');
-                        // Force a page refresh to update the task list
                         router.reload();
                     },
                     onError: () => {
@@ -92,7 +91,7 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
         <select
             value={task.status}
             onChange={(e) => updateStatus(task.id, e.target.value)}
-            className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+            className="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
         >
             <option value="pending">Pending</option>
             <option value="in_progress">In Progress</option>
@@ -125,9 +124,9 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
     }, [showModal, showEditModal]);
 
     return (
-        <AuthenticatedLayout 
-        user={auth.user}
-        header={<h2 className="font-semibold text-xl text-gray-800 leading-tight dark:text-white">Task Dashboard</h2>}
+        <AuthenticatedLayout
+            user={auth.user}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight dark:text-white">Task Dashboard</h2>}
         >
             <Toaster position="top-center" />
             <div className="py-8 px-5 lg:px-0">
@@ -355,32 +354,32 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                     {/* Edit Task Modal */}
                     {showEditModal && (
                         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                            <div className="bg-white p-6 rounded-lg w-full max-w-md">
-                                <h2 className="text-xl font-bold mb-4">Edit Task</h2>
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md shadow-lg">
+                                <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Edit Task</h2>
                                 <form onSubmit={handleUpdate}>
                                     <div className="mb-4">
-                                        <label className="block text-gray-700 mb-2">Title</label>
+                                        <label className="block text-gray-700 dark:text-gray-300 mb-2">Title</label>
                                         <input
                                             type="text"
-                                            className="w-full border rounded p-2"
+                                            className="w-full border border-gray-300 dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                             value={data.title}
                                             onChange={e => setData('title', e.target.value)}
                                         />
                                         {errors.title && <div className="text-red-500">{errors.title}</div>}
                                     </div>
                                     <div className="mb-4">
-                                        <label className="block text-gray-700 mb-2">Description</label>
+                                        <label className="block text-gray-700 dark:text-gray-300 mb-2">Description</label>
                                         <textarea
-                                            className="w-full border rounded p-2"
+                                            className="w-full border border-gray-300 dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                             value={data.description}
                                             onChange={e => setData('description', e.target.value)}
                                         />
                                         {errors.description && <div className="text-red-500">{errors.description}</div>}
                                     </div>
                                     <div className="mb-4">
-                                        <label className="block text-gray-700 mb-2">Assign To</label>
+                                        <label className="block text-gray-700 dark:text-gray-300 mb-2">Assign To</label>
                                         <select
-                                            className="w-full border rounded p-2"
+                                            className="w-full border border-gray-300 dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                             value={data.assigned_user_id}
                                             onChange={e => setData('assigned_user_id', e.target.value)}
                                         >
@@ -393,14 +392,14 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                                     <div className="flex justify-end gap-2">
                                         <button
                                             type="button"
-                                            className="bg-gray-300 px-4 py-2 rounded"
+                                            className="bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-100 px-4 py-2 rounded"
                                             onClick={() => setShowEditModal(false)}
                                         >
                                             Cancel
                                         </button>
                                         <button
                                             type="submit"
-                                            className="bg-blue-500 text-white px-4 py-2 rounded"
+                                            className="bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
                                             disabled={processing}
                                         >
                                             Update Task
@@ -409,6 +408,7 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                                 </form>
                             </div>
                         </div>
+
                     )}
                 </div>
             </div>

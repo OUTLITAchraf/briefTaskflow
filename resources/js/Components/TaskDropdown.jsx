@@ -18,14 +18,14 @@ export default function TaskDropdown({ task, onEdit, onDelete, isOpen, onToggle 
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 dark:bg-gray-700">
                     <div className="py-1" role="menu">
                         <button
                             onClick={() => {
                                 onEdit(task);
                                 onToggle(null);
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600"
                             role="menuitem"
                         >
                             Update
@@ -35,7 +35,7 @@ export default function TaskDropdown({ task, onEdit, onDelete, isOpen, onToggle 
                                 onDelete(task);
                                 onToggle(null);
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100"
+                            className="w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100 dark:text-red-400 dark:hover:bg-gray-600"
                             role="menuitem"
                         >
                             Delete

@@ -52,6 +52,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard-users', [UserController::class, 'index'])->name('dashboard-users');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
 });
 
 require __DIR__.'/auth.php';
