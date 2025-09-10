@@ -125,24 +125,28 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
     }, [showModal, showEditModal]);
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AuthenticatedLayout 
+        user={auth.user}
+        header={<h2 className="font-semibold text-xl text-gray-800 leading-tight dark:text-white">Task Dashboard</h2>}
+        >
             <Toaster position="top-center" />
             <div className="py-8 px-5 lg:px-0">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <Head title="User Dashboard" />
+                    <Head title="Task Dashboard" />
                     <div className='flex justify-between items-center mb-8'>
-                        <h1 className="text-3xl font-bold text-gray-800">User Dashboard</h1>
+                        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">Tasks Progress</h1>
+
                         {/* Create Task Modal */}
                         {showModal && (
                             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                                <div className="bg-white p-6 rounded-lg w-full max-w-md">
-                                    <h2 className="text-xl font-bold mb-4">Create New Task</h2>
+                                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md">
+                                    <h2 className="text-xl font-bold mb-4 dark:text-gray-200">Create New Task</h2>
                                     <form onSubmit={handleSubmit}>
                                         <div className="mb-4">
-                                            <label className="block text-gray-700 mb-2">Title</label>
+                                            <label className="block text-gray-700 mb-2 dark:text-white">Title</label>
                                             <input
                                                 type="text"
-                                                className="w-full border rounded p-2"
+                                                className="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded p-2"
                                                 value={data.title}
                                                 onChange={e => setData('title', e.target.value)}
                                                 placeholder='Task Title'
@@ -150,9 +154,9 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                                             {errors.title && <div className="text-red-500">{errors.title}</div>}
                                         </div>
                                         <div className="mb-4">
-                                            <label className="block text-gray-700 mb-2">Description</label>
+                                            <label className="block text-gray-700 dark:text-white mb-2">Description</label>
                                             <textarea
-                                                className="w-full border rounded p-2"
+                                                className="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded p-2"
                                                 value={data.description}
                                                 onChange={e => setData('description', e.target.value)}
                                                 placeholder='Task Description'
@@ -160,9 +164,9 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                                             {errors.description && <div className="text-red-500">{errors.description}</div>}
                                         </div>
                                         <div className="mb-4">
-                                            <label className="block text-gray-700 mb-2">Assign To</label>
+                                            <label className="block text-gray-700 dark:text-white mb-2">Assign To</label>
                                             <select
-                                                className="w-full border rounded p-2"
+                                                className="w-full border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded p-2"
                                                 value={data.assigned_user_id}
                                                 onChange={e => setData('assigned_user_id', e.target.value)}
                                             >
@@ -206,12 +210,12 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
 
                     {isAdmin && (
                         <section className="mb-10">
-                            <h2 className="text-xl font-semibold mb-4">All Tasks</h2>
+                            <h2 className="text-xl font-semibold mb-4 dark:text-white">All Tasks</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {tasks.map((task) => (
-                                    <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-purple-500">
+                                    <div key={task.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border-l-4 border-purple-500">
                                         <div className="flex justify-between items-start mb-2">
-                                            <h3 className="text-lg font-bold text-gray-800">{task.title}</h3>
+                                            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">{task.title}</h3>
                                             {!showModal && (
                                                 <TaskDropdown
                                                     task={task}
@@ -222,22 +226,22 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                                                 />
                                             )}
                                         </div>
-                                        <p className="text-gray-600 mb-3">{task.description}</p>
+                                        <p className="text-gray-600 dark:text-gray-400 mb-3">{task.description}</p>
                                         <div className="space-y-2">
-                                            <p className="text-sm text-gray-500">
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">
                                                 Created By:{" "}
-                                                <span className="font-medium text-gray-700">
+                                                <span className="font-medium text-gray-700 dark:text-gray-200">
                                                     {task.creator?.name}
                                                 </span>
                                             </p>
-                                            <p className="text-sm text-gray-500">
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">
                                                 Assigned To:{" "}
-                                                <span className="font-medium text-gray-700">
+                                                <span className="font-medium text-gray-700 dark:text-gray-200">
                                                     {task.assigned_user?.name || "Unassigned"}
                                                 </span>
                                             </p>
                                             <div className="mt-3">
-                                                <label className="block text-sm font-medium text-gray-700">
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                     Status
                                                 </label>
                                                 <StatusDropdown task={task} />
@@ -249,92 +253,102 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                         </section>
                     )}
 
-                    {isUser && (<>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                            {/* Pending */}
-                            <div className="bg-white shadow rounded-xl p-6 text-center">
-                                <div className="flex items-center justify-center mb-2">
-                                    <Clock className="h-10 w-10 text-blue-500" />
+                    {isUser && (
+                        <>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                                {/* Pending */}
+                                <div className="bg-white dark:bg-gray-800 shadow rounded-xl p-6 text-center">
+                                    <div className="flex items-center justify-center mb-2">
+                                        <Clock className="h-10 w-10 text-blue-500 dark:text-blue-400" />
+                                    </div>
+                                    <p className="text-gray-500 dark:text-gray-300">Pending Tasks</p>
+                                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                                        {[...createdTasks, ...assignedTasks].filter((t) => t.status === "pending").length}
+                                    </h2>
                                 </div>
-                                <p className="text-gray-500">Pending Tasks</p>
-                                <h2 className="text-2xl font-bold text-blue-600">
-                                    {[...createdTasks, ...assignedTasks].filter((t) => t.status === "pending").length}
-                                </h2>
+
+                                {/* In Progress */}
+                                <div className="bg-white dark:bg-gray-800 shadow rounded-xl p-6 text-center">
+                                    <div className="flex items-center justify-center mb-2">
+                                        <Loader className="h-10 w-10 text-yellow-500 dark:text-yellow-400 animate-spin-slow" />
+                                    </div>
+                                    <p className="text-gray-500 dark:text-gray-300">In Progress Tasks</p>
+                                    <h2 className="text-2xl font-bold text-yellow-500 dark:text-yellow-400">
+                                        {[...createdTasks, ...assignedTasks].filter((t) => t.status === "in_progress").length}
+                                    </h2>
+                                </div>
+
+                                {/* Completed */}
+                                <div className="bg-white dark:bg-gray-800 shadow rounded-xl p-6 text-center">
+                                    <div className="flex items-center justify-center mb-2">
+                                        <CheckCircle className="h-10 w-10 text-green-500 dark:text-green-400" />
+                                    </div>
+                                    <p className="text-gray-500 dark:text-gray-300">Completed Tasks</p>
+                                    <h2 className="text-2xl font-bold text-green-500 dark:text-green-400">
+                                        {[...createdTasks, ...assignedTasks].filter((t) => t.status === "completed").length}
+                                    </h2>
+                                </div>
                             </div>
 
-                            {/* In Progress */}
-                            <div className="bg-white shadow rounded-xl p-6 text-center">
-                                <div className="flex items-center justify-center mb-2">
-                                    <Loader className="h-10 w-10 text-yellow-500 animate-spin-slow" />
+                            <section className="mb-10">
+                                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Tasks You Created</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {createdTasks.map((task) => (
+                                        <div
+                                            key={task.id}
+                                            className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border-l-4 border-red-500"
+                                        >
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{task.title}</h3>
+                                                {!showModal && (
+                                                    <TaskDropdown
+                                                        task={task}
+                                                        onEdit={handleEdit}
+                                                        onDelete={handleDelete}
+                                                        isOpen={openDropdownId === task.id}
+                                                        onToggle={toggleDropdown}
+                                                    />
+                                                )}
+                                            </div>
+                                            <p className="text-gray-600 dark:text-gray-300 mb-3">{task.description}</p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                Assigned To:{" "}
+                                                <span className="font-medium text-gray-700 dark:text-gray-200">
+                                                    {task.assigned_user?.name || "Unassigned"}
+                                                </span>
+                                            </p>
+                                            <div className="mt-3">
+                                                <StatusDropdown task={task} />
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                                <p className="text-gray-500">In Progress Tasks</p>
-                                <h2 className="text-2xl font-bold text-yellow-500">
-                                    {[...createdTasks, ...assignedTasks].filter((t) => t.status === "in_progress").length}
-                                </h2>
-                            </div>
+                            </section>
 
-                            {/* Completed */}
-                            <div className="bg-white shadow rounded-xl p-6 text-center">
-                                <div className="flex items-center justify-center mb-2">
-                                    <CheckCircle className="h-10 w-10 text-green-500" />
+                            <section>
+                                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Tasks Assigned to You</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {assignedTasks.map((task) => (
+                                        <div
+                                            key={task.id}
+                                            className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border-l-4 border-purple-500"
+                                        >
+                                            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-2">{task.title}</h3>
+                                            <p className="text-gray-600 dark:text-gray-300 mb-3">{task.description}</p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                Created By:{" "}
+                                                <span className="font-medium text-gray-700 dark:text-gray-200">{task.creator?.name}</span>
+                                            </p>
+                                            <div className="mt-3">
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+                                                <StatusDropdown task={task} />
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                                <p className="text-gray-500">Completed Tasks</p>
-                                <h2 className="text-2xl font-bold text-green-500">
-                                    {[...createdTasks, ...assignedTasks].filter((t) => t.status === "completed").length}
-                                </h2>
-                            </div>
-                        </div>
-                        < section className="mb-10">
-                            <h2 className="text-xl font-semibold mb-4">Tasks You Created</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {createdTasks.map((task) => (
-                                    <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-red-500">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <h3 className="text-lg font-bold text-gray-800">{task.title}</h3>
-                                            {!showModal && (
-                                                <TaskDropdown
-                                                    task={task}
-                                                    onEdit={handleEdit}
-                                                    onDelete={handleDelete}
-                                                    isOpen={openDropdownId === task.id}
-                                                    onToggle={toggleDropdown}
-                                                />
-                                            )}
-                                        </div>
-                                        <p className="text-gray-600 mb-3">{task.description}</p>
-                                        <p className="text-sm text-gray-500">
-                                            Assigned To:{" "}
-                                            <span className="font-medium text-gray-700">
-                                                {task.assigned_user?.name || "Unassigned"}
-                                            </span>
-                                        </p>
-                                        <div className="mt-3">
-                                            <StatusDropdown task={task} />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-                        <section>
-                            <h2 className="text-xl font-semibold mb-4">Tasks Assigned to You</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {assignedTasks.map((task) => (
-                                    <div key={task.id} className="bg-white rounded-xl shadow-md p-5 border-l-4 border-purple-500">
-                                        <h3 className="text-lg font-bold text-gray-800 mb-2">{task.title}</h3>
-                                        <p className="text-gray-600 mb-3">{task.description}</p>
-                                        <p className="text-sm text-gray-500">
-                                            Created By:{" "}
-                                            <span className="font-medium text-gray-700">{task.creator?.name}</span>
-                                        </p>
-                                        <div className="mt-3">
-                                            <label className="block text-sm font-medium text-gray-700">Status</label>
-                                            <StatusDropdown task={task} />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-                    </>
+                            </section>
+
+                        </>
                     )}
 
 

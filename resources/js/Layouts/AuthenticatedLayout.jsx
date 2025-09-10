@@ -4,6 +4,7 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
+import DarkModeToggle from '@/Components/DarkModeToggle';
 
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
@@ -12,8 +13,8 @@ export default function Authenticated({ user, header, children }) {
     const isAdmin = role.includes('admin');        
     
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="bg-white border-b border-gray-100">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+            <nav className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">
@@ -24,15 +25,15 @@ export default function Authenticated({ user, header, children }) {
                             </div>
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink href={route('dashboard')} active={route().current('dashboard')}>
+                                <NavLink href={route('dashboard')} active={route().current('dashboard')} className='dark:text-white'>
                                     Dashboard
                                 </NavLink>
-                                <NavLink href={route('dashboard-task')} active={route().current('dashboard-task')}>
+                                <NavLink href={route('dashboard-task')} active={route().current('dashboard-task')} className='dark:text-white'>
                                     Task Dashboard
                                 </NavLink>
                                 {isAdmin && (
                                     <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                        <NavLink href={route('dashboard-users')} active={route().current('dashboard-users')}>
+                                        <NavLink href={route('dashboard-users')} active={route().current('dashboard-users')} className='dark:text-white'>
                                             Manage Users
                                         </NavLink>
                                     </div>
@@ -40,7 +41,8 @@ export default function Authenticated({ user, header, children }) {
                             </div>
                         </div>
 
-                        <div className="hidden sm:flex sm:items-center sm:ms-6">
+                        <div className="hidden sm:flex sm:items-center sm:ms-6 gap-4">
+                            <DarkModeToggle />
                             <div className="ms-3 relative">
                                 <Dropdown>
                                     <Dropdown.Trigger>
@@ -105,12 +107,17 @@ export default function Authenticated({ user, header, children }) {
 
                 <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
                     <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
+                        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')} className='dark:text-white'>
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink href={route('dashboard-task')} active={route().current('dashboard-task')}>
+                        <ResponsiveNavLink href={route('dashboard-task')} active={route().current('dashboard-task')} className='dark:text-white'>
                             Task Dashboard
                         </ResponsiveNavLink>
+                        {isAdmin && (
+                            <ResponsiveNavLink href={route('dashboard-users')} active={route().current('dashboard-users')} className='dark:text-white'>
+                                Manage Users
+                            </ResponsiveNavLink>
+                        )}
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
@@ -130,12 +137,14 @@ export default function Authenticated({ user, header, children }) {
             </nav>
 
             {header && (
-                <header className="bg-white shadow">
-                    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
+                <header className="bg-white dark:bg-gray-800 shadow">
+                    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        {header}
+                    </div>
                 </header>
             )}
 
-            <main>{children}</main>
+            <main className="dark:bg-gray-900">{children}</main>
         </div>
     );
 }

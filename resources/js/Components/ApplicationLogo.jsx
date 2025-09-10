@@ -18,7 +18,7 @@ export default function ApplicationLogo({ className = "" }) {
             </svg>
 
             {/* Text */}
-            <span className="text-2xl font-bold text-gray-800 ml-2 mr-1">
+            <span className="text-2xl font-bold text-gray-800 dark:text-white ml-2 mr-1">
                 Task
             </span>
             <span className="text-2xl font-bold text-blue-600">
