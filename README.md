@@ -1,3 +1,4 @@
+# 🚀 TaskFlow
 
 TaskFlow is a **full-stack task management application** built with **Laravel 10 + Breeze + Inertia.js (React)**.  
 It helps teams organize and track their daily tasks efficiently, with role-based access for **Admins** and **Users**.
@@ -49,22 +50,22 @@ It helps teams organize and track their daily tasks efficiently, with role-based
 
 TaskFlow/ 
 ├── app/ 
-├── bootstrap/ 
-├── config/ 
+├── bootstrap/
+├── config/
 ├── database/
-├── public/
-├── resources/ 
-│   ├── css/ 
-│   └── js/   
-<-- React + Inertia components live here 
-│       ├── Pages/ 
+├── public/ 
+├── resources/
+│   ├── css/
+│   └── js/ 
+<-- React + Inertia components live here
+│       ├── Pages/
 │       ├── Components/
 │       └── App.jsx
-├── routes/ 
-│   ├── web.php 
-│   └── api.php 
+├── routes/
+│   ├── web.php
+│   └── api.php
 ├── storage/ 
-├── composer.json 
+├── composer.json
 ├── package.json 
 └── README.md
 
@@ -79,31 +80,24 @@ cd taskflow
 
 2. Backend & Frontend (single project)
 
-```bash
 # Install PHP dependencies
 composer install
 
-```bash
 # Install Node dependencies
 npm install
 
-```bash
 # Copy environment file
 cp .env.example .env
 
-```bash
 # Generate app key
 php artisan key:generate
 
-```bash
 # Run migrations (with seeders if any)
 php artisan migrate --seed
 
-```bash
 # Start Laravel server
 php artisan serve
 
-```bash
 # Start Vite dev server (for React refresh)
 npm run dev
 
@@ -127,15 +121,13 @@ Roles and permissions are handled via Laratrust.
 📜 Useful Commands
 
 Laravel
-```bash
+
 php artisan serve                     # Run backend server
-```bash
 php artisan migrate:fresh --seed      # Reset DB with seeders
 
 Frontend (via Vite)
-```bash
+
 npm run dev     # Start dev server
-```bash
 npm run build   # Build for production
 
 
