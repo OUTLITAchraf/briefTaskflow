@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import TaskDropdown from '@/Components/TaskDropdown';
 import Swal from 'sweetalert2';
 import toast, { Toaster } from 'react-hot-toast';
-import { ChartBarIcon, CheckCircle, Clock, Loader, PlusCircleIcon } from 'lucide-react';
+import { ChartBarIcon, CheckCircle, ClipboardList, Clock, Loader, PlusCircleIcon } from 'lucide-react';
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/solid';
 
 function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
@@ -337,7 +337,10 @@ function DashboardTask({ auth, createdTasks, assignedTasks, users, tasks }) {
                             </div>
 
                             <section className="mb-10">
-                                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Tasks You Created</h2>
+                                <div className="flex items-center space-x-2 mb-5">
+                                    <ClipboardList className="w-8 h-8 text-gray-900 dark:text-white"/>
+                                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Tasks You Created</h2>
+                                </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {createdTasks.map((task) => (
                                         <div
