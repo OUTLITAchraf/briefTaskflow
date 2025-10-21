@@ -16,7 +16,7 @@ export default function Welcome({ auth }) {
                 <div className="absolute inset-0 bg-black/60"></div>
 
                 {/* Top-right Login/Register or Dashboard */}
-                <div className="relative sm:fixed sm:top-0 sm:right-0 p-6 text-end z-10">
+                <div className="relative sm:fixed sm:top-0 sm:right-0 p-6 text-end z-50">
                     {auth.user ? (
                         <Link
                             href={route("dashboard")}

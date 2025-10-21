@@ -64,10 +64,10 @@ export default function DashboardUsers({ auth, users }) {
             showCancelButton: true,
             confirmButtonText: 'Yes, delete it!',
             cancelButtonText: 'Cancel',
-            background: '#1f2937', // Tailwind gray-800
-            color: '#f3f4f6',      // Tailwind gray-100
-            confirmButtonColor: '#2563eb', // Tailwind blue-600
-            cancelButtonColor: '#dc2626',  // Tailwind red-600
+            background: '#f3f4f6', 
+            color: '#1f2937',      
+            confirmButtonColor: '#2563eb',
+            cancelButtonColor: '#dc2626',
             customClass: {
                 popup: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-lg rounded-lg',
                 title: 'text-lg font-bold',
